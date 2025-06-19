@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="theme-color" content="#6366f1">
+    <title>ProblemSprint AI - Transform Insights into AI Problem Statements</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --dark: #1f2937;
+            --light: #f3f4f6;
+            --white: #ffffff;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            margin: 0;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            max-width: 1200px;
+            width: 100%;
+            padding: 40px;
+            animation: slideIn 0.5s ease-out;
+            overflow-x: hidden;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            font-size: 48px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .tagline {
+            color: #6b7280;
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+
+        .api-key-section {
+            background: #f9fafb;
+            border: 2px dashed #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .api-key-section.has-key {
+            border-color: var(--secondary);
+            background: #f0fdf4;
+        }
+
+        .api-key-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .api-key-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .input-label {
+            display: block;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        .input-description {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 8px;
+        }
+
+        .main-input-field {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 16px;
+            resize: vertical;
+            transition: all 0.3s ease;
+            min-height: 200px;
+            font-family: inherit;
+            line-height: 1.6;
+        }
+
+        .main-input-field:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .attachment-section {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .attach-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #4b5563;
+        }
+
+        .attach-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1);
+        }
+
+        .attached-files {
+            margin-top: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .file-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: #f3f4f6;
+            border: 1px solid #e5e7eb;
+            border-radius: 20px;
+            font-size: 13px;
+            color: #4b5563;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .file-tag .remove-file {
+            cursor: pointer;
+            color: #9ca3af;
+            font-weight: bold;
+            transition: color 0.2s;
+        }
+
+        .file-tag .remove-file:hover {
+            color: var(--danger);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin: 30px 0;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            flex: 1;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-primary:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: var(--dark);
+        }
+
+        .btn-secondary:hover {
+            background: #d1d5db;
+            transform: translateY(-2px);
+        }
+
+        .output-section {
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .output-section.show {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .output-card {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .output-card:hover {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .output-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .output-content {
+            color: #4b5563;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .bias-alert {
+            background: #fef3c7;
+            border: 1px solid #fbbf24;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 16px;
+            display: none;
+        }
+
+        .bias-alert.show {
+            display: block;
+        }
+
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .loading-spinner.show {
+            display: block;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #e5e7eb;
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .error-message {
+            background: #fee;
+            border: 1px solid #fcc;
+            color: #c00;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .export-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .export-btn {
+            padding: 8px 16px;
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .export-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-1px);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .container {
+                padding: 30px;
+                margin: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                padding: 20px;
+                border-radius: 16px;
+            }
+            
+            .logo {
+                font-size: 32px;
+            }
+            
+            .tagline {
+                font-size: 16px;
+                padding: 0 10px;
+            }
+
+            .api-key-section {
+                padding: 16px;
+            }
+
+            .main-input-field {
+                min-height: 150px;
+                font-size: 14px;
+                padding: 12px 16px;
+            }
+
+            .attach-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .attached-files {
+                justify-content: center;
+            }
+            
+            .button-group {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .btn {
+                width: 100%;
+                padding: 14px 20px;
+            }
+
+            .output-card {
+                padding: 16px;
+            }
+
+            .output-title {
+                font-size: 16px;
+            }
+
+            .export-buttons {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .export-btn {
+                flex: 1;
+                min-width: 120px;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 16px;
+                border-radius: 12px;
+            }
+
+            .header {
+                margin-bottom: 24px;
+            }
+
+            .logo {
+                font-size: 28px;
+                margin-bottom: 8px;
+            }
+
+            .tagline {
+                font-size: 14px;
+                margin-bottom: 20px;
+            }
+
+            .api-key-section {
+                padding: 12px;
+                margin-bottom: 20px;
+            }
+
+            .input-label {
+                font-size: 14px;
+            }
+
+            .input-description {
+                font-size: 12px;
+            }
+
+            .api-key-input {
+                padding: 10px 12px;
+                font-size: 14px;
+            }
+
+            .main-input-field {
+                min-height: 120px;
+                padding: 10px 12px;
+                font-size: 14px;
+            }
+
+            .attachment-section {
+                margin-top: 12px;
+                padding-top: 12px;
+            }
+
+            .attach-btn {
+                padding: 8px 16px;
+                font-size: 13px;
+            }
+
+            .file-tag {
+                font-size: 12px;
+                padding: 4px 10px;
+            }
+
+            .button-group {
+                margin: 20px 0;
+            }
+
+            .btn {
+                padding: 12px 16px;
+                font-size: 14px;
+            }
+
+            .loading-spinner {
+                padding: 30px 20px;
+            }
+
+            .spinner {
+                width: 32px;
+                height: 32px;
+                margin-bottom: 12px;
+            }
+
+            .loading-spinner p {
+                font-size: 14px;
+            }
+
+            .output-card {
+                padding: 14px;
+                margin-bottom: 12px;
+            }
+
+            .output-title {
+                font-size: 15px;
+                margin-bottom: 8px;
+            }
+
+            .output-content {
+                font-size: 14px;
+            }
+
+            .bias-alert {
+                padding: 12px;
+                font-size: 13px;
+            }
+
+            .export-buttons {
+                margin-top: 16px;
+                gap: 8px;
+            }
+
+            .export-btn {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+
+            .error-message {
+                padding: 12px;
+                font-size: 14px;
+                margin-bottom: 16px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .logo {
+                font-size: 24px;
+            }
+
+            .tagline {
+                font-size: 13px;
+            }
+
+            .main-input-field {
+                min-height: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="logo">ProblemSprint AI</h1>
+            <p class="tagline">Transform raw insights into razor-sharp AI problem statements in 30 seconds</p>
+        </div>
+
+        <div class="api-key-section" id="apiKeySection">
+            <label class="input-label">OpenRouter API Key</label>
+            <p class="input-description">Enter your OpenRouter API key to start generating problem statements</p>
+            <input 
+                type="password" 
+                class="api-key-input" 
+                id="apiKey" 
+                placeholder="sk-or-v1-..."
+                autocomplete="off"
+            >
+        </div>
+
+        <div class="model-selection-section" id="modelSelectionSection" style="display:none; margin-bottom: 24px;">
+            <label class="input-label">Select Model</label>
+            <p class="input-description">Choose an AI model from OpenRouter (pricing and capabilities vary)</p>
+            <select id="modelDropdown" class="api-key-input" style="width:100%">
+                <option value="" disabled selected>Loading models...</option>
+            </select>
+            <div id="modelPricingInfo" style="font-size:13px; color:#6b7280; margin-top:6px;"></div>
+        </div>
+
+        <div class="input-section">
+            <div class="input-group">
+                <label class="input-label">Describe Your Problem</label>
+                <p class="input-description">Tell us about your challenge, including the pain points, potential solutions, and any supporting data or metrics</p>
+                <textarea 
+                    class="main-input-field" 
+                    id="problemDescription"
+                    placeholder="Example: Our medical app is facing issues with symptom severity interpretation. Customers are complaining about misdiagnosis, and we've seen ER admissions rise by 15% since launch. 40% of users report receiving incorrect triage advice. We're thinking about implementing vision transformers to analyze user-uploaded wound images to improve accuracy..."
+                ></textarea>
+                
+                <div class="attachment-section">
+                    <input type="file" id="fileInput" multiple accept=".pdf,.doc,.docx,.txt,.md" style="display: none;">
+                    <button class="attach-btn" onclick="document.getElementById('fileInput').click()">
+                        <span>📎</span>
+                        Attach Documents for Context
+                    </button>
+                    <div class="attached-files" id="attachedFiles"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button class="btn btn-primary" id="generateBtn" onclick="generateProblemStatement()">
+                Generate Problem Statement
+            </button>
+            <button class="btn btn-secondary" onclick="clearForm()">
+                Clear
+            </button>
+        </div>
+
+        <div class="error-message" id="errorMessage"></div>
+
+        <div class="loading-spinner" id="loadingSpinner">
+            <div class="spinner"></div>
+            <p>Analyzing your inputs and generating AI-ready problem statement...</p>
+        </div>
+
+        <div class="output-section" id="outputSection">
+            <div class="output-card">
+                <h3 class="output-title">
+                    <span>✓</span>
+                    Problem Statement
+                </h3>
+                <div class="output-content" id="problemStatement"></div>
+            </div>
+
+            <div class="output-card">
+                <h3 class="output-title">
+                    <span>📊</span>
+                    Success Metric (SMART Format)
+                </h3>
+                <div class="output-content" id="successMetric"></div>
+            </div>
+
+            <div class="output-card">
+                <h3 class="output-title">
+                    <span>🔍</span>
+                    Traceability Report
+                </h3>
+                <div class="output-content" id="traceabilityReport"></div>
+            </div>
+
+            <div class="output-card">
+                <h3 class="output-title">
+                    <span>⚠️</span>
+                    Bias Check
+                </h3>
+                <div class="output-content" id="biasCheck"></div>
+                <div class="bias-alert" id="biasAlert">
+                    <strong>⚠️ Potential biases detected:</strong>
+                    <div id="biasDetails"></div>
+                </div>
+            </div>
+
+            <div class="export-buttons">
+                <button class="export-btn" onclick="exportToJSON()">
+                    <span>📄</span> Export JSON
+                </button>
+                <button class="export-btn" onclick="exportToMarkdown()">
+                    <span>📝</span> Export Markdown
+                </button>
+                <button class="export-btn" onclick="copyToClipboard()">
+                    <span>📋</span> Copy All
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // API configuration
+        const API_URL = window.location.hostname === 'localhost' 
+            ? 'http://localhost:5000/api' 
+            : '/api';
+
+        // State management
+        let attachedFiles = [];
+        let currentOutput = null;
+
+        // API key handling
+        async function fetchModels(apiKey) {
+            const section = document.getElementById('modelSelectionSection');
+            const dropdown = document.getElementById('modelDropdown');
+            const pricingInfo = document.getElementById('modelPricingInfo');
+            section.style.display = 'block';
+            dropdown.innerHTML = '<option value="" disabled selected>Loading models...</option>';
+            pricingInfo.textContent = '';
+            try {
+                const response = await fetch(`${API_URL}/models`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ apiKey })
+                });
+                const data = await response.json();
+                if (!data.success) throw new Error(data.error || 'Failed to fetch models');
+                dropdown.innerHTML = '';
+                data.models.forEach(model => {
+                    const opt = document.createElement('option');
+                    opt.value = model.id;
+                    opt.textContent = `${model.name} (${model.id})`;
+                    opt.dataset.context = model.context_length;
+                    opt.dataset.prompt = model.pricing.prompt;
+                    opt.dataset.completion = model.pricing.completion;
+                    dropdown.appendChild(opt);
+                });
+                // Show pricing for first model
+                if (dropdown.options.length > 0) {
+                    dropdown.selectedIndex = 0;
+                    updateModelPricing();
+                }
+            } catch (err) {
+                dropdown.innerHTML = '<option value="" disabled selected>Failed to load models</option>';
+                pricingInfo.textContent = err.message;
+            }
+        }
+
+        function updateModelPricing() {
+            const dropdown = document.getElementById('modelDropdown');
+            const pricingInfo = document.getElementById('modelPricingInfo');
+            const selected = dropdown.options[dropdown.selectedIndex];
+            if (!selected) { pricingInfo.textContent = ''; return; }
+            const prompt = selected.dataset.prompt;
+            const completion = selected.dataset.completion;
+            const context = selected.dataset.context;
+            pricingInfo.textContent = `Context: ${context} tokens | Prompt: $${prompt}/M | Completion: $${completion}/M`;
+        }
+
+        document.getElementById('apiKey').addEventListener('input', function(e) {
+            const section = document.getElementById('apiKeySection');
+            if (e.target.value.trim()) {
+                section.classList.add('has-key');
+                fetchModels(e.target.value.trim());
+            } else {
+                section.classList.remove('has-key');
+                document.getElementById('modelSelectionSection').style.display = 'none';
+            }
+        });
+        document.getElementById('modelDropdown').addEventListener('change', updateModelPricing);
+
+        // File handling
+        document.getElementById('fileInput').addEventListener('change', handleFileAttachment);
+
+        async function handleFileAttachment(e) {
+            const files = Array.from(e.target.files);
+            
+            for (const file of files) {
+                if (file.size > 10 * 1024 * 1024) {
+                    showError(`File ${file.name} is too large. Maximum size is 10MB.`);
+                    continue;
+                }
+
+                if (!attachedFiles.find(f => f.name === file.name)) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        const base64 = event.target.result.split(',')[1];
+                        attachedFiles.push({
+                            name: file.name,
+                            content: base64,
+                            size: file.size
+                        });
+                        displayAttachedFile(file.name);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+            
+            e.target.value = '';
+        }
+
+        function displayAttachedFile(fileName) {
+            const filesContainer = document.getElementById('attachedFiles');
+            const fileTag = document.createElement('div');
+            fileTag.className = 'file-tag';
+            fileTag.innerHTML = `
+                <span>📄 ${fileName}</span>
+                <span class="remove-file" onclick="removeFile('${fileName}')">×</span>
+            `;
+            filesContainer.appendChild(fileTag);
+        }
+
+        function removeFile(fileName) {
+            attachedFiles = attachedFiles.filter(f => f.name !== fileName);
+            updateFileDisplay();
+        }
+
+        function updateFileDisplay() {
+            const filesContainer = document.getElementById('attachedFiles');
+            filesContainer.innerHTML = '';
+            attachedFiles.forEach(file => displayAttachedFile(file.name));
+        }
+
+        // Main generation function
+        async function generateProblemStatement() {
+            const apiKey = document.getElementById('apiKey').value.trim();
+            const problemDescription = document.getElementById('problemDescription').value.trim();
+            const model = document.getElementById('modelDropdown').value;
+
+            // Validation
+            if (!apiKey) {
+                showError('Please enter your OpenRouter API key');
+                return;
+            }
+
+            if (!problemDescription) {
+                showError('Please describe your problem in the main text area');
+                return;
+            }
+            if (!model) {
+                showError('Please select a model');
+                return;
+            }
+
+            // Show loading state
+            hideError();
+            document.getElementById('outputSection').classList.remove('show');
+            document.getElementById('loadingSpinner').classList.add('show');
+            document.getElementById('generateBtn').disabled = true;
+
+            try {
+                const response = await fetch(`${API_URL}/generate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        apiKey,
+                        problemDescription,
+                        attachedFiles,
+                        model
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to generate problem statement');
+                }
+
+                // Store output
+                currentOutput = {
+                    inputs: { 
+                        problemDescription, 
+                        attachedFiles: attachedFiles.map(f => f.name) 
+                    },
+                    outputs: data.output,
+                    timestamp: data.timestamp
+                };
+
+                // Display results
+                displayResults(data.output);
+
+            } catch (error) {
+                showError(error.message);
+            } finally {
+                document.getElementById('loadingSpinner').classList.remove('show');
+                document.getElementById('generateBtn').disabled = false;
+            }
+        }
+
+        function displayResults(output) {
+            document.getElementById('problemStatement').textContent = output.problemStatement;
+            document.getElementById('successMetric').textContent = output.successMetric;
+            document.getElementById('traceabilityReport').textContent = output.traceabilityReport;
+            
+            // Handle bias check
+            const biasCheck = output.biasCheck;
+            let biasText = biasCheck.description;
+            if (biasCheck.recommendations && biasCheck.recommendations.length > 0) {
+                biasText += '\n\nRecommendations:\n' + 
+                    biasCheck.recommendations.map((r, i) => `${i + 1}. ${r}`).join('\n');
+            }
+            document.getElementById('biasCheck').textContent = biasText;
+
+            // Show bias alert if needed
+            const biasAlert = document.getElementById('biasAlert');
+            if (biasCheck.hasBias) {
+                biasAlert.classList.add('show');
+                document.getElementById('biasDetails').textContent = biasCheck.description;
+            } else {
+                biasAlert.classList.remove('show');
+            }
+
+            document.getElementById('outputSection').classList.add('show');
+        }
+
+        function clearForm() {
+            document.getElementById('problemDescription').value = '';
+            document.getElementById('outputSection').classList.remove('show');
+            attachedFiles = [];
+            updateFileDisplay();
+            hideError();
+            currentOutput = null;
+        }
+
+        function showError(message) {
+            const errorEl = document.getElementById('errorMessage');
+            errorEl.textContent = message;
+            errorEl.classList.add('show');
+        }
+
+        function hideError() {
+            document.getElementById('errorMessage').classList.remove('show');
+        }
+
+        // Export functions
+        async function exportToJSON() {
+            if (!currentOutput) return;
+            
+            const dataStr = JSON.stringify(currentOutput, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `problemsprint-${Date.now()}.json`;
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+
+        async function exportToMarkdown() {
+            if (!currentOutput) return;
+            
+            try {
+                const response = await fetch(`${API_URL}/export`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        format: 'markdown',
+                        data: currentOutput
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    const blob = new Blob([data.content], { type: 'text/markdown' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = data.filename;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                }
+            } catch (err) {
+                console.error('Export error:', err);
+                // Fallback to local generation
+                const markdown = generateMarkdownLocally(currentOutput);
+                const blob = new Blob([markdown], { type: 'text/markdown' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `problemsprint-${Date.now()}.md`;
+                a.click();
+                URL.revokeObjectURL(url);
+            }
+        }
+
+        function generateMarkdownLocally(data) {
+            const { inputs, outputs } = data;
+            let markdown = `# ProblemSprint AI Output\n\n`;
+            markdown += `## Input\n\n`;
+            markdown += `### Problem Description\n${inputs.problemDescription}\n\n`;
+            
+            if (inputs.attachedFiles && inputs.attachedFiles.length > 0) {
+                markdown += `### Attached Files\n`;
+                inputs.attachedFiles.forEach(f => {
+                    markdown += `- ${f}\n`;
+                });
+                markdown += '\n';
+            }
+            
+            markdown += `## Generated Outputs\n\n`;
+            markdown += `### Problem Statement\n${outputs.problemStatement}\n\n`;
+            markdown += `### Success Metric (SMART Format)\n${outputs.successMetric}\n\n`;
+            markdown += `### Traceability Report\n${outputs.traceabilityReport}\n\n`;
+            markdown += `### Bias Check\n${outputs.biasCheck.description}\n\n`;
+            
+            if (outputs.biasCheck.recommendations && outputs.biasCheck.recommendations.length > 0) {
+                markdown += `#### Recommendations\n`;
+                outputs.biasCheck.recommendations.forEach((r, i) => {
+                    markdown += `${i + 1}. ${r}\n`;
+                });
+                markdown += '\n';
+            }
+            
+            markdown += `---\nGenerated on: ${new Date().toLocaleString()}\n`;
+            
+            return markdown;
+        }
+
+        function copyToClipboard() {
+            if (!currentOutput) return;
+
+            const { outputs } = currentOutput;
+            const text = `Problem Statement:\n${outputs.problemStatement}\n\n` +
+                `Success Metric:\n${outputs.successMetric}\n\n` +
+                `Traceability Report:\n${outputs.traceabilityReport}\n\n` +
+                `Bias Check:\n${outputs.biasCheck.description}`;
+
+            navigator.clipboard.writeText(text).then(() => {
+                // Show success feedback
+                const button = event.target.closest('.export-btn');
+                const originalText = button.innerHTML;
+                button.innerHTML = '<span>✓</span> Copied!';
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                showError('Failed to copy to clipboard');
+            });
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('ProblemSprint AI loaded successfully');
+        });
+    </script>
+</body>
+</html>
