@@ -321,7 +321,3 @@ Generated on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
 app = Flask(__name__)
 CORS(app)
 app.register_blueprint(api_bp)
-
-# Vercel serverless function handler
-def handler(request):
-    return app(request)
