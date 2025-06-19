@@ -8,7 +8,7 @@ import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'api'))
 
 # Import the API blueprint from api/index.py
-from index import api_bp
+from api.index import api_bp
 
 # Create a new Flask app for serving everything
 app = Flask(__name__, static_folder='static')
